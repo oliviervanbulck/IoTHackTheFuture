@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera beheerspagina</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="jumbotron"><h1>Alien Camera Management (ACM)</h1></div>
+</div>
+    <div class="container">
+        <div class="row">
+            <h2>Camera bewegen</h2>
+            <div class="well" style="height: 90px;">
+                <div class="col-md-6" style="text-align: center;">
+                    <button id="left" class="btn btn-lg btn-primary">Links</button>
+                </div>
+                <div class="col-md-6" style="text-align: center;">
+                    <button id="right" class="btn btn-lg btn-primary">Rechts</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>Speech to text</h2>
+            <div class="well" style="height: 90px;">
+                <form method="POST" action="/api/tts" enctype="multipart/form-data">
+                    <input type="file" id="sound" name="sound" />
+                    <input id="uploadbutton" type="submit" value="Get text!" class="btn btn-primary"/>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>Text interpreter</h2>
+            <div class="well" style="height: 90px;">
+                <input type="text" id="textinput" name="textinput" class="form-control" />
+                <button id="interpreter" class="btn btn-primary">Beweeg</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#left").click(function() {
+            $.ajax({method: 'POST', url: '/api/command', data: JSON.stringify({command : "left"}), contentType:"application/json", dataType:"json"});
+        });
+        $("#right").click(function() {
+            $.ajax({method: 'POST', url: '/api/command', data: JSON.stringify({command : "right"}), contentType:"application/json", dataType:"json"});
+        });
+        $("#interpreter").click(function() {
+            var value = $("#textinput").val();
+            if (value.indexOf('left') != -1) {
+                $.ajax({method: 'POST', url: '/api/command', data: JSON.stringify({command : "left"}), contentType:"application/json", dataType:"json"});
+            }
+            else if (value.indexOf('right') != -1) {
+                $.ajax({method: 'POST', url: '/api/command', data: JSON.stringify({command : "right"}), contentType:"application/json", dataType:"json"});
+            }
+            else {
+                alert("Er is geen goede overeenkomst gevonden.");
+            }
+            //$.ajax({method: 'POST', url: '/api/command', data: JSON.stringify({command : "right"}), contentType:"application/json", dataType:"json"});
+        });
+        /*$("#uploadbutton").click(function () {
+            var filename = $("#file").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/tts",
+                enctype: 'multipart/form-data',
+                data: {
+                    file: filename
+                },
+                success: function (data) {
+                    alert("Tekst: " + data.text);
+                },
+                dataType: 'application/json'
+            });
+        });*/
+    </script>
+</body>
+</html>
